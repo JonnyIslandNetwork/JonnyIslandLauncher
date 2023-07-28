@@ -121,6 +121,7 @@ function showUpdateUI(info){
             toggleOverlay(false)
         })
         toggleOverlay(true, true)*/
+        document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
         switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
             settingsNavItemListener(document.getElementById('settingsNavUpdate'), false)
         })

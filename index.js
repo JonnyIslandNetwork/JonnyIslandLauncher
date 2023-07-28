@@ -3,30 +3,34 @@ remoteMain.initialize()
 
 // Requirements
 const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
-const autoUpdater                       = require('electron-updater').autoUpdater
-const ejse                              = require('ejs-electron')
-const fs                                = require('fs')
-const isDev                             = require('./app/assets/js/isdev')
-const path                              = require('path')
-const semver                            = require('semver')
-const { pathToFileURL }                 = require('url')
+const autoUpdater = require('electron-updater').autoUpdater
+const ejse = require('ejs-electron')
+const fs = require('fs')
+const isDev = require('./app/assets/js/isdev')
+const path = require('path')
+const semver = require('semver')
+const { pathToFileURL } = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let win
 
 // Setup auto updater.
 function initAutoUpdater(event, data) {
 
-    if(data){
+    if (data) {
         autoUpdater.allowPrerelease = true
     } else {
         // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
         // autoUpdater.allowPrerelease = true
     }
-    
-    if(isDev){
+
+    if (isDev) {
         autoUpdater.autoInstallOnAppQuit = false
         autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml')
     }
-    if(process.platform === 'darwin'){
+    if (process.platform === 'darwin') {
         autoUpdater.autoDownload = false
     }
     autoUpdater.on('update-available', (info) => {
@@ -43,12 +47,12 @@ function initAutoUpdater(event, data) {
     })
     autoUpdater.on('error', (err) => {
         event.sender.send('autoUpdateNotification', 'realerror', err)
-    }) 
+    })
 }
 
 // Open channel to listen for update actions.
 ipcMain.on('autoUpdateAction', (event, arg, data) => {
-    switch(arg){
+    switch (arg) {
         case 'initAutoUpdater':
             console.log('Initializing auto updater.')
             initAutoUpdater(event, data)
@@ -61,9 +65,9 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
                 })
             break
         case 'allowPrereleaseChange':
-            if(!data){
+            if (!data) {
                 const preRelComp = semver.prerelease(app.getVersion())
-                if(preRelComp != null && preRelComp.length > 0){
+                if (preRelComp != null && preRelComp.length > 0) {
                     autoUpdater.allowPrerelease = true
                 } else {
                     autoUpdater.allowPrerelease = data
@@ -92,7 +96,7 @@ ipcMain.handle(SHELL_OPCODE.TRASH_ITEM, async (event, ...args) => {
         return {
             result: true
         }
-    } catch(error) {
+    } catch (error) {
         return {
             result: false,
             error: error
@@ -121,12 +125,31 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
     msftAuthViewSuccess = arguments_[0]
     msftAuthViewOnClose = arguments_[1]
     msftAuthWindow = new BrowserWindow({
+        parent: win,
+        modal: true,
+        resizable: false,
         title: 'Microsoft Login',
         backgroundColor: '#222222',
         width: 520,
-        height: 600,
+        height: 700,
         frame: true,
         icon: getPlatformIcon('SealCircle')
+    })
+    const session = msftAuthWindow.webContents.session
+    /*
+       Clear cookies from live.com and github.com from Microsoft Login, since there isn't an actual way to invalidate Microsoft access token
+   */
+    session.cookies.get({ domain: 'live.com' }).then((cookies) => {
+        for (let cookie of cookies) {
+            let urlcookie = `http${cookie.secure ? 's' : ''}://${cookie.domain.replace(/$\./, '') + cookie.path}`
+            session.cookies.remove(urlcookie, cookie.name)
+        }
+    })
+    session.cookies.get({ domain: 'github.com' }).then((cookies) => {
+        for (let cookie of cookies) {
+            let urlcookie = `http${cookie.secure ? 's' : ''}://${cookie.domain.replace(/$\./, '') + cookie.path}`
+            session.cookies.remove(urlcookie, cookie.name)
+        }
     })
 
     msftAuthWindow.on('closed', () => {
@@ -134,7 +157,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
     })
 
     msftAuthWindow.on('close', () => {
-        if(!msftAuthSuccess) {
+        if (!msftAuthSuccess) {
             ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.NOT_FINISHED, msftAuthViewOnClose)
         }
     })
@@ -158,73 +181,20 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
     })
 
     msftAuthWindow.removeMenu()
-    msftAuthWindow.loadURL(`https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?prompt=select_account&client_id=${AZURE_CLIENT_ID}&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient`)
+    msftAuthWindow.loadURL(`https://login.live.com/oauth20_authorize.srf?prompt=select_account&client_id=${AZURE_CLIENT_ID}&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient&cobrandid=8058f65d-ce06-4c30-9559-473c9275a65d`)
 })
+
 
 // Microsoft Auth Logout
-let msftLogoutWindow
-let msftLogoutSuccess
-let msftLogoutSuccessSent
 ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
-    if (msftLogoutWindow) {
-        ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.ALREADY_OPEN)
-        return
-    }
-
-    msftLogoutSuccess = false
-    msftLogoutSuccessSent = false
-    msftLogoutWindow = new BrowserWindow({
-        title: 'Microsoft Logout',
-        backgroundColor: '#222222',
-        width: 520,
-        height: 600,
-        frame: true,
-        icon: getPlatformIcon('SealCircle')
-    })
-
-    msftLogoutWindow.on('closed', () => {
-        msftLogoutWindow = undefined
-    })
-
-    msftLogoutWindow.on('close', () => {
-        if(!msftLogoutSuccess) {
-            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.NOT_FINISHED)
-        } else if(!msftLogoutSuccessSent) {
-            msftLogoutSuccessSent = true
-            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.SUCCESS, uuid, isLastAccount)
-        }
-    })
-    
-    msftLogoutWindow.webContents.on('did-navigate', (_, uri) => {
-        if(uri.startsWith('https://login.microsoftonline.com/common/oauth2/v2.0/logoutsession')) {
-            msftLogoutSuccess = true
-            setTimeout(() => {
-                if(!msftLogoutSuccessSent) {
-                    msftLogoutSuccessSent = true
-                    ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.SUCCESS, uuid, isLastAccount)
-                }
-
-                if(msftLogoutWindow) {
-                    msftLogoutWindow.close()
-                    msftLogoutWindow = null
-                }
-            }, 5000)
-        }
-    })
-    
-    msftLogoutWindow.removeMenu()
-    msftLogoutWindow.loadURL('https://login.microsoftonline.com/common/oauth2/v2.0/logout')
+    ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.SUCCESS, uuid, isLastAccount)
 })
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let win
 
 function createWindow() {
 
     win = new BrowserWindow({
-        width: 980,
-        height: 552,
+        width: 1143,
+        height: 700,
         icon: getPlatformIcon('SealCircle'),
         frame: false,
         webPreferences: {
@@ -254,8 +224,8 @@ function createWindow() {
 }
 
 function createMenu() {
-    
-    if(process.platform === 'darwin') {
+
+    if (process.platform === 'darwin') {
 
         // Extend default included application menu to continue support for quit keyboard shortcut
         let applicationSubMenu = {
@@ -317,20 +287,8 @@ function createMenu() {
 
 }
 
-function getPlatformIcon(filename){
-    let ext
-    switch(process.platform) {
-        case 'win32':
-            ext = 'ico'
-            break
-        case 'darwin':
-        case 'linux':
-        default:
-            ext = 'png'
-            break
-    }
-
-    return path.join(__dirname, 'app', 'assets', 'images', `${filename}.${ext}`)
+function getPlatformIcon(filename) {
+    return path.join(__dirname, 'app', 'assets', 'images', `${filename}.png`)
 }
 
 app.on('ready', createWindow)

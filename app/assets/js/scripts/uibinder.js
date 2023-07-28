@@ -69,8 +69,8 @@ async function showMainUI(data){
     updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
     refreshServerStatus()
     setTimeout(() => {
-        document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-        document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
+        document.getElementById('frameBar').style.backgroundColor = 'transparent'
+        document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.png')`
         $('#main').show()
 
         const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
@@ -82,6 +82,7 @@ async function showMainUI(data){
         }
 
         if(ConfigManager.isFirstLaunch()){
+            document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
             currentView = VIEWS.welcome
             $(VIEWS.welcome).fadeIn(1000)
         } else {
@@ -93,6 +94,7 @@ async function showMainUI(data){
                 loginOptionsViewOnLoginSuccess = VIEWS.landing
                 loginOptionsViewOnLoginCancel = VIEWS.loginOptions
                 currentView = VIEWS.loginOptions
+                document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
                 $(VIEWS.loginOptions).fadeIn(1000)
             }
         }
@@ -379,6 +381,7 @@ async function validateSelectedAccount(){
                 }
                 toggleOverlay(false)
                 switchView(getCurrentView(), VIEWS.loginOptions)
+                document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
             })
             setDismissHandler(() => {
                 if(accLen > 1){

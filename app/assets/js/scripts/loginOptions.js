@@ -20,6 +20,7 @@ function loginOptionsCancelEnabled(val){
 
 loginOptionMicrosoft.onclick = (e) => {
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
+        document.getElementById('waitingText').innerHTML = 'Please login in the window that has just opened'
         ipcRenderer.send(
             MSFT_OPCODE.OPEN_LOGIN,
             loginOptionsViewOnLoginSuccess,

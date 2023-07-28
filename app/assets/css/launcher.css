@@ -1477,6 +1477,28 @@ input:checked + .toggleSwitchSlider:before {
     color: rgba(255, 255, 255, 0.75);
 }
 
+/* File Open button. */
+.settingsFolderOpenButton {
+    border: 0px;
+    border-radius: 4px 4px 4px 4px;
+    font-size: 15px;
+    padding: 0px 5px;
+    cursor: pointer;
+    background: rgba(126, 126, 126, 0.57);
+    transition: 0.25s ease;
+    white-space: nowrap;
+    outline: none;
+    margin: 0px 3px;
+}
+.settingsFolderOpenButton:hover,
+.settingsFolderOpenButton:focus {
+    text-shadow: 0px 0px 20px white;
+}
+.settingsFolderOpenButton:active {
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+}
+
 /* Description for the file selector. */
 .settingsFileSelDesc {
     font-size: 10px;
