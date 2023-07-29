@@ -8,6 +8,7 @@ const { Type }      = require('helios-distribution-types')
 
 const AuthManager   = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
+const DistroManager = require('./assets/js/distromanager')
 const { DistroAPI } = require('./assets/js/distromanager')
 const Lang          = require('./assets/js/langloader')
 
@@ -68,7 +69,8 @@ async function showMainUI(data){
     await prepareSettings(true)
     updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
     refreshServerStatus()
-    setTimeout(() => {
+    loadDiscord()
+    setTimeout(async () => {
         document.getElementById('frameBar').style.backgroundColor = 'transparent'
         document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.png')`
         $('#main').show()
@@ -80,15 +82,26 @@ async function showMainUI(data){
         if(!isDev && isLoggedIn){
             validateSelectedAccount()
         }
-
         if(ConfigManager.isFirstLaunch()){
             document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
             currentView = VIEWS.welcome
             $(VIEWS.welcome).fadeIn(1000)
+            if(hasRPC){
+                DiscordWrapper.updateState('Starting the launcher for the first time')
+            }
         } else {
             if(isLoggedIn){
                 currentView = VIEWS.landing
                 $(VIEWS.landing).fadeIn(1000)
+                if(hasRPC && !ConfigManager.isFirstLaunch()){
+                    if(ConfigManager.getSelectedServer()){
+                        const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+                        DiscordWrapper.updateDetails('Ready to play!')
+                        DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
+                    } else {
+                        DiscordWrapper.updateDetails('Ready to launch the game...')
+                    }
+                }
             } else {
                 loginOptionsCancelEnabled(false)
                 loginOptionsViewOnLoginSuccess = VIEWS.landing
@@ -96,6 +109,10 @@ async function showMainUI(data){
                 currentView = VIEWS.loginOptions
                 document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
                 $(VIEWS.loginOptions).fadeIn(1000)
+                if(hasRPC){
+                    DiscordWrapper.updateDetails('Adding an account...')
+                    DiscordWrapper.clearState()
+                }
             }
         }
 
@@ -381,6 +398,10 @@ async function validateSelectedAccount(){
                 }
                 toggleOverlay(false)
                 switchView(getCurrentView(), VIEWS.loginOptions)
+                if(hasRPC){
+                    DiscordWrapper.updateDetails('Adding an account...')
+                    DiscordWrapper.clearState()
+                }
                 document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
             })
             setDismissHandler(() => {
@@ -465,4 +486,19 @@ async function devModeToggle() {
     ensureJavaSettings(data)
     updateSelectedServer(data.servers[0])
     syncModConfigurations(data)
+}
+
+
+async function loadDiscord() {
+    if (!ConfigManager.getDiscordIntegration()) return
+    const distro = await DistroAPI.getDistribution()
+    const serv = distro.getServerById(ConfigManager.getSelectedServer())
+    console.log(distro, serv)
+
+    if (!hasRPC) {
+        if (distro.rawDistribution.discord != null) {
+            DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.discord, '...')
+            hasRPC = true
+        }
+    }
 }

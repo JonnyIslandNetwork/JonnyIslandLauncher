@@ -173,9 +173,22 @@ loginCancelButton.onclick = (e) => {
             loginViewCancelHandler()
             if (loginViewOnSuccess === VIEWS.settings) {
                 document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
+                if (hasRPC) {
+                    DiscordWrapper.updateDetails('In the settings...')
+                    DiscordWrapper.clearState()
+                }
             }
             else {
                 document.getElementById('frameBar').style.backgroundColor = 'transparent'
+                if (hasRPC) {
+                    if (ConfigManager.getSelectedServer()) {
+                        const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                        DiscordWrapper.updateDetails('Ready to play!')
+                        DiscordWrapper.updateState('Server: ' + serv.getName())
+                    } else {
+                        DiscordWrapper.updateDetails('Ready to launch the game...')
+                    }
+                }
             }
             loginViewCancelHandler = null
         }
@@ -202,6 +215,20 @@ loginButton.addEventListener('click', () => {
             switchView(VIEWS.login, loginViewOnSuccess, 500, 500, async () => {
                 // Temporary workaround
                 if (loginViewOnSuccess === VIEWS.settings) {
+                    if (hasRPC) {
+                        DiscordWrapper.updateDetails('In the settings...')
+                        DiscordWrapper.clearState()
+                    }
+                } else {
+                    if (hasRPC) {
+                        if (ConfigManager.getSelectedServer()) {
+                            const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                            DiscordWrapper.updateDetails('Ready to play!')
+                            DiscordWrapper.updateState('Server: ' + serv.getName())
+                        } else {
+                            DiscordWrapper.updateDetails('Ready to launch the game...')
+                        }
+                    }
                     document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
                     await prepareSettings()
                 }

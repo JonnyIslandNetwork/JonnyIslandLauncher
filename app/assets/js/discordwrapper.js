@@ -13,13 +13,11 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting 
 
     activity = {
         details: initialDetails,
-        state: 'Server: ' + servSettings.shortId,
-        largeImageKey: servSettings.largeImageKey,
-        largeImageText: servSettings.largeImageText,
-        smallImageKey: genSettings.smallImageKey,
-        smallImageText: genSettings.smallImageText,
+        largeImageKey: genSettings.smallImageKey,
+        largeImageText: genSettings.smallImageText,
         startTimestamp: new Date().getTime(),
-        instance: false
+        instance: false,
+        buttons: [{label: 'Join us', url: 'https://jonnyisland.net'}, {label: 'Discord', url: 'https://discord.gg/uw6JWGFtAZ'}]
     }
 
     client.on('ready', () => {
@@ -34,6 +32,42 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting 
             logger.info('Unable to initialize Discord Rich Presence: ' + error.message, error)
         }
     })
+}
+
+exports.updateState = function(state){
+    activity.state = state
+    client.setActivity(activity)
+    //logger.log('Updated discord state to: ' + state)
+}
+
+exports.clearState = function(){
+    activity = {
+        details: activity.details,
+        largeImageKey: activity.largeImageKey,
+        largeImageText: activity.largeImageText,
+        startTimestamp: activity.startTimestamp,
+        instance: activity.instance
+    }
+    client.setActivity(activity)
+}
+
+exports.clearDetails = function(){
+    activity = {
+        state: activity.state,
+        largeImageKey: activity.largeImageKey,
+        largeImageText: activity.largeImageText,
+        startTimestamp: activity.startTimestamp,
+        instance: activity.instance
+    }
+}
+
+exports.resetTime = function(){
+    activity.startTimestamp = new Date().getTime()
+    client.setActivity(activity)
+}
+
+exports.getClient = function(){
+    return client
 }
 
 exports.updateDetails = function(details){

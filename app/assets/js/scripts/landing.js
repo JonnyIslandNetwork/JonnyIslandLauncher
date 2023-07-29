@@ -146,6 +146,10 @@ document.getElementById('launch_button').addEventListener('click', async e => {
 
 // Bind settings button
 document.getElementById('settingsMediaButton').onclick = async e => {
+    if (hasRPC) {
+        DiscordWrapper.updateDetails('In the settings...')
+        DiscordWrapper.clearState()
+    }
     document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
     await prepareSettings()
     switchView(getCurrentView(), VIEWS.settings)
@@ -196,7 +200,7 @@ function updateSelectedServer(serv) {
     }
 }
 // Real text is set in uibinder.js on distributionIndexDone.
-server_selection_button.innerHTML = '\u2022 Loading..'
+server_selection_button.innerHTML = '\u2022 Loading...'
 server_selection_button.onclick = async e => {
     e.target.blur()
     await toggleServerSelection(true)
@@ -618,9 +622,9 @@ async function dlAsync(login = true) {
         const gameStateChange = function (data) {
             data = data.trim()
             if (SERVER_JOINED_REGEX.test(data)) {
-                DiscordWrapper.updateDetails('Exploring the Realm!')
+                DiscordWrapper.updateDetails('Exploring JonnyIsland!')
             } else if (GAME_JOINED_REGEX.test(data)) {
-                DiscordWrapper.updateDetails('Sailing to Westeros!')
+                DiscordWrapper.updateDetails('In the menus!')
             }
         }
 
@@ -643,16 +647,14 @@ async function dlAsync(login = true) {
             setLaunchDetails('Done. Enjoy the server!')
 
             // Init Discord Hook
-            if (distro.rawDistribution.discord != null && serv.rawServerdiscord != null) {
-                DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
-                hasRPC = true
-                proc.on('close', (code, signal) => {
-                    loggerLaunchSuite.info('Shutting down Discord Rich Presence..')
-                    DiscordWrapper.shutdownRPC()
-                    hasRPC = false
-                    proc = null
-                })
-            }
+            proc.on('close', (code, signal) => {
+                if (hasRPC) {
+                    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                    DiscordWrapper.updateDetails('Ready to play')
+                    DiscordWrapper.updateState('Server: ' + serv.getName())
+                    DiscordWrapper.resetTime()
+                }
+            })
 
         } catch (err) {
 
@@ -738,6 +740,15 @@ document.getElementById('newsButton').onclick = () => {
         document.getElementById('frameBar').style.backgroundColor = 'transparent'
         $('#landingContainer *').removeAttr('tabindex')
         $('#newsContainer *').attr('tabindex', '-1')
+        if (hasRPC) {
+            if (ConfigManager.getSelectedServer()) {
+                const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                DiscordWrapper.updateDetails('Ready to play!')
+                DiscordWrapper.updateState('Server: ' + serv.getName())
+            } else {
+                DiscordWrapper.updateDetails('Ready to launch the game...')
+            }
+        }
     } else {
         document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
         $('#landingContainer *').attr('tabindex', '-1')
@@ -747,6 +758,10 @@ document.getElementById('newsButton').onclick = () => {
             newsAlertShown = false
             ConfigManager.setNewsCacheDismissed(true)
             ConfigManager.save()
+            if (hasRPC) {
+                DiscordWrapper.updateDetails('Reading news...')
+                DiscordWrapper.clearState()
+            }
         }
     }
     slide_(!newsActive)

@@ -348,6 +348,15 @@ function fullSettingsSave() {
 settingsNavDone.onclick = () => {
     fullSettingsSave()
     document.getElementById('frameBar').style.backgroundColor = 'transparent'
+    if(hasRPC){
+        if(ConfigManager.getSelectedServer()){
+            const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+            DiscordWrapper.updateDetails('Ready to play!')
+            DiscordWrapper.updateState('Server: ' + serv.getName())
+        } else {
+            DiscordWrapper.updateDetails('Ready to launch the game...')
+        }
+    }
     switchView(getCurrentView(), VIEWS.landing)
 }
 
@@ -364,6 +373,10 @@ document.getElementById('settingsAddMojangAccount').onclick = (e) => {
         loginViewOnCancel = VIEWS.settings
         loginViewOnSuccess = VIEWS.landing
         loginCancelEnabled(true)
+        if(hasRPC){
+            DiscordWrapper.updateDetails('Adding an account...')
+            DiscordWrapper.clearState()
+        }
     })
 }
 
@@ -371,6 +384,10 @@ document.getElementById('settingsAddMojangAccount').onclick = (e) => {
 document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
     document.getElementById('waitingText').innerHTML = 'Please login in the window that has just opened'
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
+        if(hasRPC){
+            DiscordWrapper.updateDetails('Adding an account...')
+            DiscordWrapper.clearState()
+        }
         ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.landing, VIEWS.settings)
     })
 }
@@ -509,6 +526,10 @@ function bindAuthAccountLogOut() {
                 setOverlayHandler(() => {
                     processLogOut(val, isLastAccount)
                     toggleOverlay(false)
+                    if(hasRPC){
+                        DiscordWrapper.updateDetails('Adding an account...')
+                        DiscordWrapper.clearState()
+                    }
                 })
                 setDismissHandler(() => {
                     toggleOverlay(false)
