@@ -165,7 +165,7 @@ function loginCancelEnabled(val) {
 }
 
 loginCancelButton.onclick = (e) => {
-    switchView(getCurrentView(), loginViewOnCancel, 500, 500, () => {
+    switchView(getCurrentView(), loginViewOnCancel, 500, 500, async () => {
         loginUsername.value = ''
         loginPassword.value = ''
         loginCancelEnabled(false)
@@ -182,9 +182,9 @@ loginCancelButton.onclick = (e) => {
                 document.getElementById('frameBar').style.backgroundColor = 'transparent'
                 if (hasRPC) {
                     if (ConfigManager.getSelectedServer()) {
-                        const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                        const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
                         DiscordWrapper.updateDetails('Ready to play!')
-                        DiscordWrapper.updateState('Server: ' + serv.getName())
+                        DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
                     } else {
                         DiscordWrapper.updateDetails('Ready to launch the game...')
                     }
@@ -222,9 +222,9 @@ loginButton.addEventListener('click', () => {
                 } else {
                     if (hasRPC) {
                         if (ConfigManager.getSelectedServer()) {
-                            const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                            const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
                             DiscordWrapper.updateDetails('Ready to play!')
-                            DiscordWrapper.updateState('Server: ' + serv.getName())
+                            DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
                         } else {
                             DiscordWrapper.updateDetails('Ready to launch the game...')
                         }

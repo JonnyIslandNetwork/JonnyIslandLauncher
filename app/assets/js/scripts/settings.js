@@ -345,14 +345,14 @@ function fullSettingsSave() {
 }
 
 /* Closes the settings view and saves all data. */
-settingsNavDone.onclick = () => {
+settingsNavDone.onclick = async () => {
     fullSettingsSave()
     document.getElementById('frameBar').style.backgroundColor = 'transparent'
     if(hasRPC){
         if(ConfigManager.getSelectedServer()){
-            const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+            const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
             DiscordWrapper.updateDetails('Ready to play!')
-            DiscordWrapper.updateState('Server: ' + serv.getName())
+            DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
         } else {
             DiscordWrapper.updateDetails('Ready to launch the game...')
         }

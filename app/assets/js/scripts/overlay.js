@@ -120,7 +120,7 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
 async function toggleServerSelection(toggleState) {
     await prepareServerSelectionList()
     toggleOverlay(toggleState, true, 'serverSelectContent')
-    DiscordWrapper.updateDetails('Choosing a server...')
+    if (hasRPC) DiscordWrapper.updateDetails('Choosing a server...')
 }
 
 /**
@@ -148,8 +148,10 @@ function setOverlayHandler(handler) {
     if (handler == null) {
         document.getElementById('overlayAcknowledge').onclick = () => {
             toggleOverlay(false)
-            DiscordWrapper.updateDetails('Ready to play!')
-            DiscordWrapper.updateState('Server: ' + serv.getName())
+            if (hasRPC) {
+                DiscordWrapper.updateDetails('Ready to play!')
+                DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
+            }
         }
     } else {
         document.getElementById('overlayAcknowledge').onclick = handler

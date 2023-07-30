@@ -621,9 +621,9 @@ async function dlAsync(login = true) {
         // Listener for Discord RPC.
         const gameStateChange = function (data) {
             data = data.trim()
-            if (SERVER_JOINED_REGEX.test(data)) {
+            if (SERVER_JOINED_REGEX.test(data) && hasRPC) {
                 DiscordWrapper.updateDetails('Exploring JonnyIsland!')
-            } else if (GAME_JOINED_REGEX.test(data)) {
+            } else if (GAME_JOINED_REGEX.test(data) && hasRPC) {
                 DiscordWrapper.updateDetails('In the menus!')
             }
         }
@@ -647,12 +647,11 @@ async function dlAsync(login = true) {
             setLaunchDetails('Done. Enjoy the server!')
 
             // Init Discord Hook
-            proc.on('close', (code, signal) => {
+            proc.on('close', async (code, signal) => {
                 if (hasRPC) {
-                    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                    const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
                     DiscordWrapper.updateDetails('Ready to play')
-                    DiscordWrapper.updateState('Server: ' + serv.getName())
-                    DiscordWrapper.resetTime()
+                    DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
                 }
             })
 
@@ -734,7 +733,7 @@ function slide_(up) {
 }
 
 // Bind news button.
-document.getElementById('newsButton').onclick = () => {
+document.getElementById('newsButton').onclick = async () => {
     // Toggle tabbing.
     if (newsActive) {
         document.getElementById('frameBar').style.backgroundColor = 'transparent'
@@ -742,9 +741,9 @@ document.getElementById('newsButton').onclick = () => {
         $('#newsContainer *').attr('tabindex', '-1')
         if (hasRPC) {
             if (ConfigManager.getSelectedServer()) {
-                const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
                 DiscordWrapper.updateDetails('Ready to play!')
-                DiscordWrapper.updateState('Server: ' + serv.getName())
+                DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
             } else {
                 DiscordWrapper.updateDetails('Ready to launch the game...')
             }
