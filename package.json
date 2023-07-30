@@ -1,13 +1,13 @@
 {
   "name": "jonnyislandlauncher",
-  "version": "1.0.0-beta2",
+  "version": "1.0.0-beta3",
   "productName": "JonnyIsland Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
   "license": "UNLICENSED",
   "homepage": "https://github.com/jonnyislandnetwork/jonnyislandlauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/jonnyislandnetwork/jonnyislandlauncherissues"
   },
   "private": true,
   "main": "index.js",
