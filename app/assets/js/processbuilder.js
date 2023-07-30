@@ -522,7 +522,7 @@ class ProcessBuilder {
             isAutoconnectBroken = ProcessBuilder.isAutoconnectBroken(this.forgeData.id.split('-')[2])
         } catch(err) {
             logger.error(err)
-            logger.error('Forge version format changed.. assuming autoconnect works.')
+            logger.error('Forge version format changed... assuming autoconnect works.')
             logger.debug('Forge version:', this.forgeData.id)
         }
 

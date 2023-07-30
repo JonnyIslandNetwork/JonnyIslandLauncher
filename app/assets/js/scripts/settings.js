@@ -1578,7 +1578,7 @@ function populateSettingsUpdateInformation(data) {
                 shell.openExternal(data.darwindownload)
             })
         } else {
-            settingsUpdateButtonStatus('Downloading..', true)
+            settingsUpdateButtonStatus('Downloading...', true)
         }
     } else {
         settingsUpdateTitle.innerHTML = 'You Are Running the Latest Version'
@@ -1587,7 +1587,7 @@ function populateSettingsUpdateInformation(data) {
         settingsUpdateButtonStatus('Check for Updates', false, () => {
             if (!isDev) {
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
-                settingsUpdateButtonStatus('Checking for Updates..', true)
+                settingsUpdateButtonStatus('Checking for Updates...', true)
             }
         })
     }

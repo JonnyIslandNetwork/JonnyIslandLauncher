@@ -113,7 +113,7 @@ function setLaunchButtonText(text) {
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
-    loggerLanding.info('Launching game..')
+    loggerLanding.info('Launching game...')
     if (ConfigManager.getConsoleOnLaunch()) {
         let window = remote.getCurrentWindow()
         if (!window.isDevToolsOpened()) window.toggleDevTools()
@@ -208,7 +208,7 @@ server_selection_button.onclick = async e => {
 
 // Update Mojang Status Color
 const refreshMojangStatuses = async function () {
-    loggerLanding.info('Refreshing Mojang Statuses..')
+    loggerLanding.info('Refreshing Mojang Statuses...')
 
     let status = 'grey'
     let tooltipEssentialHTML = ''
@@ -332,7 +332,7 @@ function showLaunchFailure(title, desc) {
  */
 async function asyncSystemScan(effectiveJavaOptions, launchAfter = true) {
 
-    setLaunchDetails('Checking system info..')
+    setLaunchDetails('Checking system info...')
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
@@ -351,7 +351,7 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true) {
             'Install Manually'
         )
         setOverlayHandler(() => {
-            setLaunchDetails('Preparing Java Download..')
+            setLaunchDetails('Preparing Java Download...')
             toggleOverlay(false)
 
             try {
@@ -484,7 +484,7 @@ async function dlAsync(login = true) {
 
     const loggerLaunchSuite = LoggerUtil.getLogger('LaunchSuite')
 
-    setLaunchDetails('Loading server information..')
+    setLaunchDetails('Loading server information...')
 
     let distro
 
@@ -506,7 +506,7 @@ async function dlAsync(login = true) {
         }
     }
 
-    setLaunchDetails('Please wait..')
+    setLaunchDetails('Please wait...')
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
@@ -532,7 +532,7 @@ async function dlAsync(login = true) {
     })
 
     loggerLaunchSuite.info('Validating files.')
-    setLaunchDetails('Validating file integrity..')
+    setLaunchDetails('Validating file integrity...')
     let invalidFileCount = 0
     try {
         invalidFileCount = await fullRepairModule.verifyFiles(percent => {
@@ -548,7 +548,7 @@ async function dlAsync(login = true) {
 
     if (invalidFileCount > 0) {
         loggerLaunchSuite.info('Downloading files.')
-        setLaunchDetails('Downloading files..')
+        setLaunchDetails('Downloading files...')
         setLaunchPercentage(0)
         try {
             await fullRepairModule.download(percent => {
@@ -569,7 +569,7 @@ async function dlAsync(login = true) {
 
     fullRepairModule.destroyReceiver()
 
-    setLaunchDetails('Preparing to launch..')
+    setLaunchDetails('Preparing to launch...')
 
     const mojangIndexProcessor = new MojangIndexProcessor(
         ConfigManager.getCommonDirectory(),
@@ -587,7 +587,7 @@ async function dlAsync(login = true) {
         const authUser = ConfigManager.getSelectedAccount()
         loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
         let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
-        setLaunchDetails('Launching game..')
+        setLaunchDetails('Launching game...')
 
         // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
         const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
@@ -782,7 +782,7 @@ let newsLoadingListener = null
 function setNewsLoading(val) {
     if (val) {
         const nLStr = 'Checking for News'
-        let dotStr = '..'
+        let dotStr = '...'
         nELoadSpan.innerHTML = nLStr + dotStr
         newsLoadingListener = setInterval(() => {
             if (dotStr.length >= 3) {

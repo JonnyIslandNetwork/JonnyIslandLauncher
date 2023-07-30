@@ -41,8 +41,8 @@ if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
         switch(arg){
             case 'checking-for-update':
-                loggerAutoUpdater.info('Checking for update..')
-                settingsUpdateButtonStatus('Checking for Updates..', true)
+                loggerAutoUpdater.info('Checking for update...')
+                settingsUpdateButtonStatus('Checking for Updates...', true)
                 break
             case 'update-available':
                 loggerAutoUpdater.info('New update available', info.version)
@@ -80,7 +80,7 @@ if(!isDev){
                     } else if(info.code === 'ERR_XML_MISSED_ELEMENT'){
                         loggerAutoUpdater.info('No releases found.')
                     } else {
-                        loggerAutoUpdater.error('Error during update check..', info)
+                        loggerAutoUpdater.error('Error during update check...', info)
                         loggerAutoUpdater.debug('Error Code:', info.code)
                     }
                 }
@@ -135,7 +135,7 @@ $(function(){
 
 document.addEventListener('readystatechange', function () {
     if (document.readyState === 'interactive'){
-        loggerUICore.info('UICore Initializing..')
+        loggerUICore.info('UICore Initializing...')
 
         // Bind close button.
         Array.from(document.getElementsByClassName('fCb')).map((val) => {
