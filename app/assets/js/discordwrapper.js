@@ -11,6 +11,8 @@ let client
 let activity
 
 exports.initRPC = function(genSettings, servSettings, initialDetails = Lang.queryJS('discord.waiting')){
+
+    console.log(JSON.stringify(servSettings))
     client = new Client({ transport: 'ipc' })
 
     activity = {

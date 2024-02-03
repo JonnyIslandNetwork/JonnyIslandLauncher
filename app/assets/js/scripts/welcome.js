@@ -3,7 +3,7 @@
  */
 document.getElementById('welcomeButton').addEventListener('click', e => {
     if(hasRPC){
-        DiscordWrapper.updateDetails('Adding an account...')
+        DiscordWrapper.updateDetails('Adding an account..')
         DiscordWrapper.clearState()
     }
     loginOptionsCancelEnabled(false) // False by default, be explicit.

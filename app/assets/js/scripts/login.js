@@ -174,7 +174,7 @@ loginCancelButton.onclick = (e) => {
             if (loginViewOnSuccess === VIEWS.settings) {
                 document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
                 if (hasRPC) {
-                    DiscordWrapper.updateDetails('In the settings...')
+                    DiscordWrapper.updateDetails('In the settings..')
                     DiscordWrapper.clearState()
                 }
             }
@@ -186,7 +186,7 @@ loginCancelButton.onclick = (e) => {
                         DiscordWrapper.updateDetails('Ready to play!')
                         DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
                     } else {
-                        DiscordWrapper.updateDetails('Ready to launch the game...')
+                        DiscordWrapper.updateDetails('Ready to launch the game..')
                     }
                 }
             }
@@ -216,7 +216,7 @@ loginButton.addEventListener('click', () => {
                 // Temporary workaround
                 if (loginViewOnSuccess === VIEWS.settings) {
                     if (hasRPC) {
-                        DiscordWrapper.updateDetails('In the settings...')
+                        DiscordWrapper.updateDetails('In the settings..')
                         DiscordWrapper.clearState()
                     }
                 } else {
@@ -226,7 +226,7 @@ loginButton.addEventListener('click', () => {
                             DiscordWrapper.updateDetails('Ready to play!')
                             DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
                         } else {
-                            DiscordWrapper.updateDetails('Ready to launch the game...')
+                            DiscordWrapper.updateDetails('Ready to launch the game..')
                         }
                     }
                     document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'

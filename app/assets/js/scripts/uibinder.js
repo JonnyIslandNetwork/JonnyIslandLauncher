@@ -61,7 +61,7 @@ function getCurrentView(){
 async function showMainUI(data){
 
     if(!isDev){
-        loggerAutoUpdater.info('Initializing...')
+        loggerAutoUpdater.info('Initializing..')
         ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
     }
 
@@ -98,7 +98,7 @@ async function showMainUI(data){
                         DiscordWrapper.updateDetails('Ready to play!')
                         DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
                     } else {
-                        DiscordWrapper.updateDetails('Ready to launch the game...')
+                        DiscordWrapper.updateDetails('Ready to launch the game..')
                     }
                 }
             } else {
@@ -109,7 +109,7 @@ async function showMainUI(data){
                 document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
                 $(VIEWS.loginOptions).fadeIn(1000)
                 if(hasRPC){
-                    DiscordWrapper.updateDetails('Adding an account...')
+                    DiscordWrapper.updateDetails('Adding an account..')
                     DiscordWrapper.clearState()
                 }
             }
@@ -400,7 +400,7 @@ async function validateSelectedAccount(){
                 toggleOverlay(false)
                 switchView(getCurrentView(), VIEWS.loginOptions)
                 if(hasRPC){
-                    DiscordWrapper.updateDetails('Adding an account...')
+                    DiscordWrapper.updateDetails('Adding an account..')
                     DiscordWrapper.clearState()
                 }
                 document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
@@ -495,10 +495,11 @@ async function loadDiscord() {
     const distro = await DistroAPI.getDistribution()
     const serv = distro.getServerById(ConfigManager.getSelectedServer())
     console.log(distro, serv)
+    
 
     if (!hasRPC) {
         if (distro.rawDistribution.discord != null) {
-            DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.discord, '...')
+            DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord, '..')
             hasRPC = true
         }
     }

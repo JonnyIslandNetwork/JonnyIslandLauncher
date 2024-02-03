@@ -112,7 +112,7 @@ function setLaunchButtonText(text) {
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
-    loggerLanding.info('Launching game...')
+    loggerLanding.info('Launching game..')
     if (ConfigManager.getConsoleOnLaunch()) {
         let window = remote.getCurrentWindow()
         if (!window.isDevToolsOpened()) window.toggleDevTools()
@@ -146,7 +146,7 @@ document.getElementById('launch_button').addEventListener('click', async e => {
 // Bind settings button
 document.getElementById('settingsMediaButton').onclick = async e => {
     if (hasRPC) {
-        DiscordWrapper.updateDetails('In the settings...')
+        DiscordWrapper.updateDetails('In the settings..')
         DiscordWrapper.clearState()
     }
     document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
@@ -208,7 +208,7 @@ server_selection_button.onclick = async e => {
 
 // Update Mojang Status Color
 const refreshMojangStatuses = async function () {
-    loggerLanding.info('Refreshing Mojang Statuses...')
+    loggerLanding.info('Refreshing Mojang Statuses..')
 
     let status = 'grey'
     let tooltipEssentialHTML = ''
@@ -748,7 +748,7 @@ document.getElementById('newsButton').onclick = async () => {
                 DiscordWrapper.updateDetails('Ready to play!')
                 DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
             } else {
-                DiscordWrapper.updateDetails('Ready to launch the game...')
+                DiscordWrapper.updateDetails('Ready to launch the game..')
             }
         }
     } else {
@@ -761,7 +761,7 @@ document.getElementById('newsButton').onclick = async () => {
             ConfigManager.setNewsCacheDismissed(true)
             ConfigManager.save()
             if (hasRPC) {
-                DiscordWrapper.updateDetails('Reading news...')
+                DiscordWrapper.updateDetails('Reading news..')
                 DiscordWrapper.clearState()
             }
         }
@@ -781,8 +781,8 @@ let newsLoadingListener = null
  * 
  * @param {boolean} val True to set loading animation, otherwise false.
  */
-function setNewsLoading(val){
-    if(val){
+function setNewsLoading(val) {
+    if (val) {
         const nLStr = Lang.queryJS('landing.news.checking')
         let dotStr = '..'
         nELoadSpan.innerHTML = nLStr + dotStr
@@ -862,7 +862,7 @@ async function digestMessage(str) {
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
  */
-async function initNews(){
+async function initNews() {
 
     setNewsLoading(true)
 
@@ -870,7 +870,7 @@ async function initNews(){
 
     newsArr = news?.articles || null
 
-    if(newsArr == null){
+    if (newsArr == null) {
         // News Loading Failed
         setNewsLoading(false)
 
@@ -900,9 +900,9 @@ async function initNews(){
         let newDate = new Date(lN.date)
         let isNew = false
 
-        if(cached.date != null && cached.content != null){
+        if (cached.date != null && cached.content != null) {
 
-            if(new Date(cached.date) >= newDate){
+            if (new Date(cached.date) >= newDate) {
 
                 // Compare Content
                 if (cached.content !== newHash) {
@@ -925,7 +925,7 @@ async function initNews(){
             showNewsAlert()
         }
 
-        if(isNew){
+        if (isNew) {
             ConfigManager.setNewsCache({
                 date: newDate.getTime(),
                 content: newHash,
@@ -936,9 +936,9 @@ async function initNews(){
 
         const switchHandler = (forward) => {
             let cArt = parseInt(newsContent.getAttribute('article'))
-            let nxtArt = forward ? (cArt >= newsArr.length-1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length-1 : cArt - 1)
+            let nxtArt = forward ? (cArt >= newsArr.length - 1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length - 1 : cArt - 1)
 
-            displayArticle(newsArr[nxtArt], nxtArt+1)
+            displayArticle(newsArr[nxtArt], nxtArt + 1)
         }
 
         document.getElementById('newsNavigateRight').onclick = () => { switchHandler(true) }
@@ -995,8 +995,8 @@ function displayArticle(articleObject, index) {
             text.style.display = text.style.display === 'block' ? 'none' : 'block'
         }
     })
-    newsNavigationStatus.innerHTML = Lang.query('ejs.landing.newsNavigationStatus', {currentPage: index, totalPages: newsArr.length})
-    newsContent.setAttribute('article', index-1)
+    newsNavigationStatus.innerHTML = Lang.query('ejs.landing.newsNavigationStatus', { currentPage: index, totalPages: newsArr.length })
+    newsContent.setAttribute('article', index - 1)
 }
 
 /**
@@ -1014,12 +1014,15 @@ async function loadNews() {
     const promise = new Promise((resolve, reject) => {
 
         const newsFeed = distroData.rawDistribution.rss
+        console.log(newsFeed)
         const newsHost = new URL(newsFeed).origin + '/'
         $.ajax({
             url: newsFeed,
+            dataType: "xml",
             success: (data) => {
                 const items = $(data).find('item')
                 const articles = []
+                console.log(data)
 
                 for (let i = 0; i < items.length; i++) {
                     // JQuery Element
@@ -1063,6 +1066,7 @@ async function loadNews() {
             },
             timeout: 2500
         }).catch(err => {
+            console.log(err)
             resolve({
                 articles: null
             })

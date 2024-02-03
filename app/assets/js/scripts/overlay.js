@@ -66,6 +66,8 @@ function bindOverlayKeys(state, content, dismissable) {
  * @param {string} content Optional. The content div to be shown.
  */
 function toggleOverlay(toggleState, dismissable = false, content = 'overlayContent') {
+    if (toggleState === true) document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
+    else if (toggleState === false && getCurrentView() === VIEWS.landing) document.getElementById('frameBar').style.backgroundColor = 'transparent'
     if (toggleState == null) {
         toggleState = !document.getElementById('main').hasAttribute('overlay')
     }
@@ -120,7 +122,7 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
 async function toggleServerSelection(toggleState) {
     await prepareServerSelectionList()
     toggleOverlay(toggleState, true, 'serverSelectContent')
-    if (hasRPC) DiscordWrapper.updateDetails('Choosing a server...')
+    if (hasRPC) DiscordWrapper.updateDetails('Choosing a server..')
 }
 
 /**
@@ -131,7 +133,7 @@ async function toggleServerSelection(toggleState) {
  * @param {string} acknowledge Acknowledge button text.
  * @param {string} dismiss Dismiss button text.
  */
-function setOverlayContent(title, description, acknowledge, dismiss = Lang.queryJS('overlay.dismiss')){
+function setOverlayContent(title, description, acknowledge, dismiss = Lang.queryJS('overlay.dismiss')) {
     document.getElementById('overlayTitle').innerHTML = title
     document.getElementById('overlayDesc').innerHTML = description
     document.getElementById('overlayAcknowledge').innerHTML = acknowledge
@@ -168,6 +170,7 @@ function setDismissHandler(handler) {
     if (handler == null) {
         document.getElementById('overlayDismiss').onclick = () => {
             toggleOverlay(false)
+            if (getCurrentView() === VIEWS.landing) document.getElementById('frameBar').style.backgroundColor = 'transparent'
         }
     } else {
         document.getElementById('overlayDismiss').onclick = handler

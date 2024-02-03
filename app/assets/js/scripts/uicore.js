@@ -81,7 +81,7 @@ if(!isDev){
                     } else if(info.code === 'ERR_XML_MISSED_ELEMENT'){
                         loggerAutoUpdater.info('No releases found.')
                     } else {
-                        loggerAutoUpdater.error('Error during update check...', info)
+                        loggerAutoUpdater.error('Error during update check..', info)
                         loggerAutoUpdater.debug('Error Code:', info.code)
                     }
                 }
@@ -136,7 +136,7 @@ $(function(){
 
 document.addEventListener('readystatechange', function () {
     if (document.readyState === 'interactive'){
-        loggerUICore.info('UICore Initializing...')
+        loggerUICore.info('UICore Initializing..')
 
         // Bind close button.
         Array.from(document.getElementsByClassName('fCb')).map((val) => {

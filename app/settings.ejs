@@ -176,7 +176,7 @@
 
                     </div>
                 </div>
-                <div id="settingsShadersContainer">
+                <div id="settingsShadersContainer" style="display: none;">
                     <div class="settingsModsHeader"><%- lang('settings.shaderpacks') %></div>
                     <div id="settingsShaderpackDesc"><%- lang('settings.shaderpackDesc') %></div>
                     <div id="settingsShaderpackWrapper">
@@ -386,7 +386,7 @@
                         <input class="settingsFileSelVal" type="text" value="null" cValue="DataDirectory" disabled>
                         <button class="settingsFileSelButton" dialogTitle="<%- lang('settings.selectDataDirectory') %>"
                             dialogDirectory="true"><%- lang('settings.chooseFolder') %></button>
-                        <button class="settingsFolderOpenButton" dialogDirectory="true"><%- lang('settings.open')%>
+                        <button class="settingsFolderOpenButton" pathId="DataDirectory" dialogDirectory="true"><%- lang('settings.openFolder')%>
                         </button>
                     </div>
                 </div>

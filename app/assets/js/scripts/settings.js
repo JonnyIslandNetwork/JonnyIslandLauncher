@@ -354,7 +354,7 @@ settingsNavDone.onclick = async () => {
             DiscordWrapper.updateDetails('Ready to play!')
             DiscordWrapper.updateState('Server: ' + serv.rawServer.name)
         } else {
-            DiscordWrapper.updateDetails('Ready to launch the game...')
+            DiscordWrapper.updateDetails('Ready to launch the game..')
         }
     }
     switchView(getCurrentView(), VIEWS.landing)
@@ -374,7 +374,7 @@ document.getElementById('settingsAddMojangAccount').onclick = (e) => {
         loginViewOnSuccess = VIEWS.landing
         loginCancelEnabled(true)
         if(hasRPC){
-            DiscordWrapper.updateDetails('Adding an account...')
+            DiscordWrapper.updateDetails('Adding an account..')
             DiscordWrapper.clearState()
         }
     })
@@ -385,7 +385,7 @@ document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
     document.getElementById('waitingTextContainer').innerText = 'Please login in the window that has just opened'
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
         if(hasRPC){
-            DiscordWrapper.updateDetails('Adding an account...')
+            DiscordWrapper.updateDetails('Adding an account..')
             DiscordWrapper.clearState()
         }
         ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.landing, VIEWS.settings)
@@ -524,7 +524,7 @@ function bindAuthAccountLogOut() {
                     processLogOut(val, isLastAccount)
                     toggleOverlay(false)
                     if(hasRPC){
-                        DiscordWrapper.updateDetails('Adding an account...')
+                        DiscordWrapper.updateDetails('Adding an account..')
                         DiscordWrapper.clearState()
                     }
                 })

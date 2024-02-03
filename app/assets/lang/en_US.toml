@@ -104,7 +104,7 @@ allowPrereleaseDesc = "Pre-Releases include new features which may have not been
 dataDirectoryTitle = "Data Directory"
 selectDataDirectory = "Select Data Directory"
 chooseFolder = "Choose Folder"
-openFolder = "Open"
+openFolder = "Open Folder"
 dataDirectoryDesc = "All game files and local Java installations will be stored in the data directory.<br>Screenshots and world saves are stored in the instance folder for the corresponding server configuration."
 aboutTabHeaderText = "About"
 aboutTabHeaderDesc = "View information and release notes for the current version."
@@ -293,6 +293,6 @@ loginButton = "Login"
 selectAnotherAccountButton = "Select Another Account"
 
 [js.uicore.autoUpdate]
-checkingForUpdateButton = "Checking for Updates..."
+checkingForUpdateButton = "Checking for Updates.."
 installNowButton = "Install Now"
 checkForUpdatesButton = "Check for Updates"
