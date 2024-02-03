@@ -10,6 +10,7 @@ const {ipcRenderer, shell, webFrame} = require('electron')
 const remote                         = require('@electron/remote')
 const isDev                          = require('./assets/js/isdev')
 const { LoggerUtil }                 = require('helios-core')
+const Lang                           = require('./assets/js/langloader')
 
 const loggerUICore             = LoggerUtil.getLogger('UICore')
 const loggerAutoUpdater        = LoggerUtil.getLogger('AutoUpdater')
@@ -41,8 +42,8 @@ if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
         switch(arg){
             case 'checking-for-update':
-                loggerAutoUpdater.info('Checking for update...')
-                settingsUpdateButtonStatus('Checking for Updates...', true)
+                loggerAutoUpdater.info('Checking for update..')
+                settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkingForUpdateButton'), true)
                 break
             case 'update-available':
                 loggerAutoUpdater.info('New update available', info.version)
@@ -56,7 +57,7 @@ if(!isDev){
                 break
             case 'update-downloaded':
                 loggerAutoUpdater.info('Update ' + info.version + ' ready to be installed.')
-                settingsUpdateButtonStatus('Install Now', false, () => {
+                settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.installNowButton'), false, () => {
                     if(!isDev){
                         ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
                     }
@@ -65,7 +66,7 @@ if(!isDev){
                 break
             case 'update-not-available':
                 loggerAutoUpdater.info('No new update found.')
-                settingsUpdateButtonStatus('Check for Updates')
+                settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
                 break
             case 'ready':
                 updateCheckListener = setInterval(() => {

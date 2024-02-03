@@ -1,0 +1,20 @@
+# Custom Language File for Launcher Customizer
+
+[ejs.app]
+title = "JonnyIsland Launcher"
+
+[ejs.landing]
+mediaGitHubURL = "https://jonnyisland.net"
+mediaTwitterURL = "https://twitter.com/Jonnytheepic1"
+mediaInstagramURL = "#"
+mediaYouTubeURL = "https://youtube.com/@jonnyislandstudios2005"
+mediaDiscordURL = "https://discord.gg/BdP2NmBtb3"
+
+[ejs.settings]
+sourceGithubLink = "https://github.com/jonnyislandnetwork/jonnyislandlauncher"
+supportLink = "https://github.com/jonnyislandnetwork/jonnyislandlauncher/issues"
+
+[ejs.welcome]
+welcomeHeader = "WELCOME TO JONNYISLAND NETWORK"
+welcomeDescription = "A place where you can unleash your creativity."
+welcomeDescCTA = "You are just a few clicks away from our servers."

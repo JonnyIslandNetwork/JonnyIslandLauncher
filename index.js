@@ -11,6 +11,10 @@ const path = require('path')
 const semver = require('semver')
 const { pathToFileURL } = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
+const LangLoader = require('./app/assets/js/langloader')
+
+// Setup Lang
+LangLoader.setupLanguage()
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -132,7 +136,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
         parent: win,
         modal: true,
         resizable: false,
-        title: 'Microsoft Login',
+        title: LangLoader.queryJS('index.microsoftLoginTitle'),
         backgroundColor: '#222222',
         width: 520,
         height: 700,
@@ -210,7 +214,11 @@ function createWindow() {
     })
     remoteMain.enable(win.webContents)
 
-    ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
+    const data = {
+        bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),
+        lang: (str, placeHolders) => LangLoader.queryEJS(str, placeHolders)
+    }
+    Object.entries(data).forEach(([key, val]) => ejse.data(key, val))
 
     win.loadURL(pathToFileURL(path.join(__dirname, 'app', 'app.ejs')).toString())
 

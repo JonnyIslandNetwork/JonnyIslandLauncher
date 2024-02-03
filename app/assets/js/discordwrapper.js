@@ -5,16 +5,21 @@ const logger = LoggerUtil.getLogger('DiscordWrapper')
 
 const { Client } = require('discord-rpc-patch')
 
+const Lang = require('./langloader')
+
 let client
 let activity
 
-exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting for Client...'){
+exports.initRPC = function(genSettings, servSettings, initialDetails = Lang.queryJS('discord.waiting')){
     client = new Client({ transport: 'ipc' })
 
     activity = {
         details: initialDetails,
-        largeImageKey: genSettings.smallImageKey,
-        largeImageText: genSettings.smallImageText,
+        state: Lang.queryJS('discord.state', {shortId: servSettings.shortId}),
+        largeImageKey: servSettings.largeImageKey,
+        largeImageText: servSettings.largeImageText,
+        smallImageKey: genSettings.smallImageKey,
+        smallImageText: genSettings.smallImageText,
         startTimestamp: new Date().getTime(),
         instance: false,
         buttons: [{label: 'Join us', url: 'https://jonnyisland.net'}, {label: 'Discord', url: 'https://discord.gg/uw6JWGFtAZ'}]
