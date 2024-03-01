@@ -2,7 +2,7 @@ appId: 'jonnyislandlauncher'
 productName: 'JonnyIsland Launcher'
 artifactName: '${productName}-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2023 JonnyIsland Network'
+copyright: 'Copyright © 2018-2024 JonnyIsland Network'
 
 asar: true
 compression: 'maximum'
