@@ -233,6 +233,12 @@ function createWindow() {
     win.on('closed', () => {
         win = null
     })
+
+    win.webContents.on('zoom-changed', (event, zoomDirection) => {
+        const current = win.webContents.zoomFactor
+        if (zoomDirection  === 'in') win.webContents.zoomFactor = current * 1.1
+        else if (zoomDirection  === 'out') win.webContents.zoomFactor = current * 0.9
+    })
 }
 
 function createMenu() {

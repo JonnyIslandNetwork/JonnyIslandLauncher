@@ -213,8 +213,8 @@ checking = "Checking for News"
 
 [js.landing.discord]
 loading = "Loading game.."
-joining = "Sailing to Westeros!"
-joined = "Exploring the Realm!"
+joining = "Traveling to the Island!"
+joined = "Exploring the Island!"
 
 [js.overlay]
 dismiss = "Dismiss"
