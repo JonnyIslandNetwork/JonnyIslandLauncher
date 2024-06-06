@@ -1,13 +1,13 @@
 {
   "name": "jonnyislandlauncher",
-  "version": "1.0.0-beta8",
+  "version": "1.0.0",
   "productName": "JonnyIsland Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "Daniel Scalzi (https://github.com/dscalzi/) and GeekCorner (https://github.com/GeekCornerGH)",
   "license": "UNLICENSED",
   "homepage": "https://github.com/jonnyislandnetwork/jonnyislandlauncher",
   "bugs": {
-    "url": "https://github.com/jonnyislandnetwork/jonnyislandlauncherissues"
+    "url": "https://github.com/jonnyislandnetwork/jonnyislandlauncher/issues"
   },
   "private": true,
   "main": "index.js",
